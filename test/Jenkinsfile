@@ -1,21 +1,22 @@
 pipeline {
     agent any
 
+    when {
+        changeset "helm/**"
+    }
+
     stages {
         stage('Test Changeset') {
             parallel {
-                stage('Regular Build') {
+                stage('Step 1') {
                     steps {
-                        echo 'This will always run'
+                        echo 'Step 1'
                     }
                 }
 
-                stage('Helm Build') {
-                    when {
-                        changeset "helm/**"
-                    }
+                stage('Step 2') {
                     steps {
-                        echo 'This will only run when helm/** files change'
+                        echo 'Step 2'
                     }
                 }
             }
