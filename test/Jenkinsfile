@@ -1,0 +1,30 @@
+pipeline {
+    agent any
+
+    stages {
+        stage('Test Changeset') {
+            parallel {
+                stage('Regular Build') {
+                    steps {
+                        echo 'This will always run'
+                    }
+                }
+
+                stage('Helm Build') {
+                    when {
+                        changeset "helm/**"
+                    }
+                    steps {
+                        echo 'This will only run when helm/** files change'
+                    }
+                }
+            }
+        }
+    }
+
+    post {
+        always {
+            echo 'Pipeline finished'
+        }
+    }
+}
