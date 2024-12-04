@@ -1,24 +1,49 @@
 pipeline {
     agent any
 
-    when {
-        changeset "helm/**"
-    }
-
     stages {
-        stage('Test Changeset') {
-            parallel {
-                stage('Step 1') {
+        stage('Helm Changes') {
+            when {
+                changeset "helm/**"
+            }
+
+            stages {
+                stage('Lint') {
                     steps {
-                        echo 'Step 1'
+                        echo 'Running helm lint'
                     }
                 }
 
-                stage('Step 2') {
+                stage('Test') {
                     steps {
-                        echo 'Step 2'
+                        echo 'Running helm template tests'
                     }
                 }
+
+                stage('Package') {
+                    steps {
+                        echo 'Packaging helm chart'
+                    }
+                }
+
+                stage('Publish') {
+                    steps {
+                        echo 'Publishing to helm repository'
+                    }
+                }
+
+                stage('Deploy to Dev') {
+                    steps {
+                        echo 'Deploying to development environment'
+                    }
+                }
+            }
+        }
+
+        // Other non-helm related stages can go here
+        stage('Cleanup') {
+            steps {
+                echo 'Cleaning up workspace'
             }
         }
     }
